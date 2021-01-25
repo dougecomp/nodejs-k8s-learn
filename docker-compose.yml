@@ -1,0 +1,54 @@
+version: '3'
+
+volumes: 
+  portainer_data:
+
+services:
+  # portainer:
+  #   image: portainer/portainer-ce
+  #   container_name: portainer
+  #   restart: always
+  #   ports: 
+  #     - 8000:8000
+  #     - 9000:9000
+  #   volumes:
+  #     - portainer_data:/data
+  #     - /var/run/docker.sock:/var/run/docker.sock
+
+  watchtower:
+    image: containrrr/watchtower
+    container_name: watchtower
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./containers/watchtower/config.json:/config.json
+    command: --interval 15 --cleanup --debug --label-enable
+
+  nginx:
+    image: nginx:1.19
+    restart: always
+    ports:
+      - 80:80
+    volumes:
+      - ./containers/nginx/nginx.conf:/etc/nginx/nginx.conf
+
+  # nginx-proxy:
+  #   image: jwilder/nginx-proxy
+  #   restart: always
+  #   ports:
+  #     - "80:80"
+  #   volumes:
+  #     - "/var/run/docker.sock:/tmp/docker.sock:ro"
+  #     - "./vhost.d:/etc/nginx/vhost.d:ro"
+
+  app:
+    # Check if private repository exists
+    image: index.docker.io/deusilva/sample-api:latest
+    labels: 
+      - com.centurylinklabs.watchtower.enable=true
+    volumes: 
+      - ./:/app
+    # ports: 
+    #   - 3300-3333:3333
+    depends_on: 
+      - nginx
