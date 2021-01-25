@@ -15,14 +15,14 @@ services:
   #     - portainer_data:/data
   #     - /var/run/docker.sock:/var/run/docker.sock
 
-  watchtower:
-    image: containrrr/watchtower
-    container_name: watchtower
-    restart: always
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ./containers/watchtower/config.json:/config.json
-    command: --interval 15 --cleanup --debug --label-enable
+  # watchtower:
+  #   image: containrrr/watchtower
+  #   container_name: watchtower
+  #   restart: always
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #     - ./containers/watchtower/config.json:/config.json
+  #   command: --interval 15 --cleanup --debug --label-enable
 
   nginx:
     image: nginx:1.19
@@ -46,8 +46,6 @@ services:
     image: index.docker.io/deusilva/sample-api:latest
     labels: 
       - com.centurylinklabs.watchtower.enable=true
-    volumes: 
-      - ./:/app
     # ports: 
     #   - 3300-3333:3333
     depends_on: 
